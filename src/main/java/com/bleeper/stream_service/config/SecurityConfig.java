@@ -25,9 +25,9 @@ public class SecurityConfig {
                                 "/public/**",
                                 "/stream/**",
                                 "/actuator/**").permitAll()
-                        .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwkSetUri("http://identity:8081/.well-known/jwks.json")));
+                        .anyRequest().authenticated());
+//                .oauth2ResourceServer(oauth2 -> oauth2
+//                        .jwt(jwt -> jwt.jwkSetUri("http://identity:8081/.well-known/jwks.json")));
         return http.build();
     }
 
