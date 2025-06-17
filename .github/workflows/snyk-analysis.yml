@@ -1,0 +1,39 @@
+name: Snyk Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  snyk:
+    name: Snyk SAST + Dependency Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17' # or 11 depending on your project
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      # OPTIONAL: Build the project (needed for proper dependency analysis)
+      - name: Build the project with Maven
+        run: mvn clean install -DskipTests
+
+      # SCA: Test dependencies (Maven or Gradle)
+      - name: Snyk Open Source (Dependency Scan)
+        run: snyk test --all-projects
+
+      # SAST: Scan source code (Java)
+      - name: Snyk Code (SAST)
+        run: snyk code test
